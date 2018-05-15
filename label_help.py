@@ -39,7 +39,7 @@ def load_label(filename='LABEL.label'):
 
 
 def label_image(img_path, brand):
-    p = subprocess.Popen(["display", img_path])
+    p = subprocess.Popen(["open", "-W", img_path]) #open for mac
     label = raw_input("Give a label for image: ")
     p.kill()
     print ("We label {} as {}".format(img_path, label))
@@ -160,7 +160,7 @@ def label_for_prediction_mobile(brand):
             label_image(img_path, brand)
 
 
-IMG_WEB_DIR = "/home/ketian/tmp/SNAP1/"
+IMG_WEB_DIR = "/Users/stevejan/Desktop/SNAP1/"
 LABEL_FILE = "MAY14.SNAP1.WEB.label"
 
 
@@ -171,7 +171,7 @@ if __name__ == "__main__":
     pop_brand = ["509", "243", "436", "567", "293", "219", "19", "209"] #Done
 
     # BUSINESS
-    busi = map_domain_to_id.business_v
+    busi = map_domain_to_id.business_v #Done
 
     shopping = map_domain_to_id.shopping_v
 
@@ -182,6 +182,6 @@ if __name__ == "__main__":
 
     banks = map_domain_to_id.banks_brand
     
-    for i in pop_brand + other_brand:
+    for i in shopping:
         label_from_prediction(i)
 
