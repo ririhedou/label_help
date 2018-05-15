@@ -173,15 +173,15 @@ if __name__ == "__main__":
     # BUSINESS
     busi = map_domain_to_id.business_v #Done
 
-    shopping = map_domain_to_id.shopping_v
+    shopping = map_domain_to_id.shopping_v #Done
 
     #computer
-    com = map_domain_to_id.computer_v
+    com = map_domain_to_id.computer_v #done
 
-    news = map_domain_to_id.news_v
+    news = map_domain_to_id.news_v  #Done
 
     banks = map_domain_to_id.banks_brand
     
-    for i in shopping:
+    for i in banks :
         label_from_prediction(i)
 
