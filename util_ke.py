@@ -100,7 +100,6 @@ def generate_scp_file_web(idx, OUT_PUT = "snap1_all.txt"):
     xn--fcebook-pwa.com..source.txt
     """
     DIR = "/home/ketian/ChromeHeadless/snapApr01/"
-
     web_res, web_domains = read_results("./out/" + idx + "_web.result")
     print ("LEN OF WEB DOMAINS", len(web_domains))
 
