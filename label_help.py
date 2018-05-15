@@ -5,7 +5,6 @@
 import subprocess
 import os
 import sys
-import util_ke
 import map_domain_to_id
 
 
@@ -39,7 +38,6 @@ def load_label(filename='LABEL.label'):
     return labels
 
 
-
 def label_image(img_path, brand):
     p = subprocess.Popen(["display", img_path])
     label = raw_input("Give a label for image: ")
@@ -59,7 +57,7 @@ def write_label_into_file(idx, label, brand):
 
 def label_from_prediction(brand_idx):
 
-    path = "./data_need_label/snap1_all.txt"
+    path = "./data_need_label/snap1_retrain.txt"
 
     global IMG_WEB_DIR
     global LABEL_FILE
@@ -67,6 +65,7 @@ def label_from_prediction(brand_idx):
     def read_brand_predicts(brand):
         fileList = set()
         f = open(path, "r")
+        t = []
         for line in f.readlines():
             line = line.strip()
             _brand = line.split("/")[-2]
@@ -74,6 +73,7 @@ def label_from_prediction(brand_idx):
             if _brand == brand:
                 #print (brand, domain_name)
                 fileList.add(domain_name)
+        print ("total {} needs label".format(len(fileList)))
         return [IMG_WEB_DIR + i+"..screen.png" for i in fileList]
 
     def read_labeled_brand(filename='LABEL.label'):
@@ -83,16 +83,19 @@ def label_from_prediction(brand_idx):
         with open(filename) as f:
             for line in f.readlines():
                 line = line.strip()
+                if len(line) == 0 or line.startswith("#"):
+                    continue
                 brand = line.split(',')[1]
                 brands.add(brand)
         return list(brands)
 
+    read_ares = read_brand_predicts(brand_idx)
     if brand_idx in read_labeled_brand(LABEL_FILE):
         print ("ALready labeled")
         return
 
-    print ("\n\n\nread {}".format(brand_idx))
-    read_ares = read_brand_predicts(brand_idx)
+    d_map = map_domain_to_id.domain_id_map
+    print ("\n\n\nread {} for domain: {}".format(brand_idx, d_map[int(brand_idx)]))
 
     for img_path in read_ares:
         label_image(img_path, brand_idx)
@@ -139,8 +142,7 @@ def label_for_prediction_mobile(brand):
             if _brand == brand:
                 #print (brand, domain_name)
                 fileList.add(domain_name)
-        return [DIR + i+"..screen.png" for i in fileList]
-
+        return [DIR + i+ "..screen.png" for i in fileList]
 
     print ("\n\n\n {}".format(brand))
 
@@ -164,9 +166,9 @@ LABEL_FILE = "MAY14.SNAP1.WEB.label"
 
 if __name__ == "__main__":
 
-    other_brand = ["677", "676", "94", "111", "151" ,"20"]
+    other_brand = ["677", "676", "94", "111", "151" ,"20"] #Done
 
-    pop_brand = ["509", "243", "436", "567", "293", "219", "19", "209"]
+    pop_brand = ["509", "243", "436", "567", "293", "219", "19", "209"] #Done
 
     # BUSINESS
     busi = map_domain_to_id.business_v
@@ -176,11 +178,10 @@ if __name__ == "__main__":
     #computer
     com = map_domain_to_id.computer_v
 
+    news = map_domain_to_id.news_v
 
-    visited = pop_brand + other_brand + busi +shopping
-    brand = com
-    brand = ["243"]
-
-    for i in brand:
+    banks = map_domain_to_id.banks_brand
+    
+    for i in pop_brand + other_brand:
         label_from_prediction(i)
 

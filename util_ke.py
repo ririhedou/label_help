@@ -122,5 +122,5 @@ def generate_all_idxs():
 
     print ("DONE on generate scp files")
 
-generate_all_idxs()
+#generate_all_idxs()
 
