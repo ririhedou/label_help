@@ -68,7 +68,7 @@ def write_a_list_into_file(F, ALIST):
     f.close()
 
 
-def generate_scp_file_mobile(idx, OUT_PUT = "snap1_mb.txt"):
+def generate_scp_file_mobile(idx, OUT_PUT = "snap1_mb_retrain.txt"):
     """
     xn--fcebook-pwa.com..redirect
     xn--fcebook-pwa.com..screen.png
@@ -92,7 +92,7 @@ def generate_scp_file_mobile(idx, OUT_PUT = "snap1_mb.txt"):
     write_a_list_into_file(OUT_PUT, ALIST=file_list)
 
 
-def generate_scp_file_web(idx, OUT_PUT = "snap1_all.txt"):
+def generate_scp_file_web(idx, OUT_PUT = "snap1_retrain.txt"):
     """
     xn--fcebook-pwa.com..redirect
     xn--fcebook-pwa.com..screen.png
@@ -121,3 +121,6 @@ def generate_all_idxs():
         generate_scp_file_mobile(str(i))
 
     print ("DONE on generate scp files")
+
+generate_all_idxs()
+
