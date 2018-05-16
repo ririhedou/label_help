@@ -14,6 +14,8 @@ def read_label_from(f):
         if len(l) == 1:
             return l
         elif len(l) == 2:
+            #if l[0] == '1':
+            #print (domain, l)
             return l[0]
         else:
             print (domain, l)
@@ -54,14 +56,17 @@ def get_false_positive_by_brand(d):
     print ("1 AND 2",(t1+t2+0.0)/len(d))
 
 
-def statistcs_on_classification_predictions(prediction_f):
+def statistcs_on_classification_predictions(prediction_f, web=True):
     f = open(prediction_f, "r")
     brand_map = collections.defaultdict(list)
 
     predictions = []
     for line in f.readlines():
         line = line.strip()
-        _brand = line.split("/")[-2]
+        if web:
+            _brand = line.split("/")[-2]
+        else:
+            _brand = line.split("/")[-2][:-7]
         domain_name = line.split("/")[-1].split("..")[0]
         brand_map[_brand].append(domain_name)
 
@@ -79,14 +84,19 @@ def statistcs_on_classification_predictions(prediction_f):
             #print (i, domain_id_map[i], len(brand_map[str(i)]))
             predictions.append([domain_id_map[i], len(brand_map[str(i)])])
 
-    predictions.sort(key=lambda x: x[1])
+    predictions.sort(key=lambda x: x[1], reverse=True)
     total = sum(i[1] for i in predictions)
 
-    #for i in predictions:
-    #    print (i[0], i[1], float(i[1])/total)
+    zero = 0
+    #for i in predictions[:10]:
+        #print (i[0], i[1], float(i[1])/total)
+        #if i[1] == 0:
+        #print (i[0])
+        #zero += 1
 
     print ("TOTAL", total)
     print ("TOTAL", sum(len(brand_map[i]) for i in brand_map))
+    print ("ZERO", zero)
     return brand_map
 
 
@@ -96,10 +106,21 @@ if __name__ == "__main__":
     f_web = "MAY14.SNAP1.WEB.label"
     #_, mb_brand = read_label_from(f_mb)
     web_label, web_brand_map = read_label_from(f_web)
-    get_false_positive_by_brand(web_label)
-    """
-    web_brand_snap1_map = statistcs_on_classification_predictions("data_need_label/snap1_retrain.txt")
+    #get_false_positive_by_brand(web_label)
 
+    web_brand_snap1_map = statistcs_on_classification_predictions("data_need_label/snap1_retrain.txt")
+    mb_brand_snap1_map = statistcs_on_classification_predictions("data_need_label/snap1_mb_retrain.txt", web=False)
+
+    #compute overlapping
+    overlapping = 0
+    for i in web_brand_snap1_map:
+        web_domains = web_brand_snap1_map[i]
+        mb_domains = mb_brand_snap1_map[i]
+        overlapping += len(set(mb_domains).intersection(set(web_domains)))
+
+    print (overlapping)
+
+    """
     for i in web_brand_snap1_map:
         if len(web_brand_snap1_map[i]) != len(web_brand_map[i]):
             print (i, len(web_brand_snap1_map[i]))
