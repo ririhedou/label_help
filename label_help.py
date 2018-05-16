@@ -75,7 +75,7 @@ def label_from_prediction(brand_idx):
             if _brand == brand:
                 #print (brand, domain_name)
                 fileList.add(domain_name)
-        print ("total {} needs label".format(len(fileList)))
+        print ("BRAND IDX {} total {} needs label".format(brand, len(fileList)))
         return [IMG_DIR + i+"..screen.png" for i in fileList]
 
     def read_labeled_brand(filename='LABEL.label'):
@@ -111,19 +111,18 @@ LABEL_FILE = "MAY14.SNAP1.MOBILE.label"
 
 if __name__ == "__main__":
 
-    other_brand = ["677", "676", "94", "111", "151" ,"20"] #Done
+    pop_brand = ["509", "243", "436", "567", "293", "219", "19", "209"] # Done
 
-    pop_brand = ["509", "243", "436", "567", "293", "219", "19", "209"] #Done
+    other_brand = ["677", "676", "94", "111", "151", "20"]
 
     # BUSINESS
-    busi = map_domain_to_id.business_v #Done
+    busi = map_domain_to_id.business_v
+    # Shopping
+    shopping = map_domain_to_id.shopping_v
+    # Computer
+    com = map_domain_to_id.computer_v
 
-    shopping = map_domain_to_id.shopping_v #Done
-
-    #computer
-    com = map_domain_to_id.computer_v #done
-
-    news = map_domain_to_id.news_v  #Done
+    news = map_domain_to_id.news_v
 
     banks = map_domain_to_id.banks_brand
     
