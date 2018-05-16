@@ -39,7 +39,9 @@ def load_label(filename='LABEL.label'):
 
 
 def label_image(img_path, brand):
-    p = subprocess.Popen(["open", "-W", img_path]) #open for mac
+    #p = subprocess.Popen(["open", "-W", img_path]) #open for mac
+    p = subprocess.Popen(["display", img_path])  # display for linux
+
     label = raw_input("Give a label for image: ")
     p.kill()
     print ("We label {} as {}".format(img_path, label))
@@ -57,9 +59,9 @@ def write_label_into_file(idx, label, brand):
 
 def label_from_prediction(brand_idx):
 
-    path = "./data_need_label/snap1_retrain.txt"
+    path = "./data_need_label/snap1_mb_retrain.txt"
 
-    global IMG_WEB_DIR
+    global IMG_DIR
     global LABEL_FILE
 
     def read_brand_predicts(brand):
@@ -68,13 +70,13 @@ def label_from_prediction(brand_idx):
         t = []
         for line in f.readlines():
             line = line.strip()
-            _brand = line.split("/")[-2]
+            _brand = line.split("/")[-2][:-7]
             domain_name = line.split("/")[-1].split("..")[0]
             if _brand == brand:
                 #print (brand, domain_name)
                 fileList.add(domain_name)
         print ("total {} needs label".format(len(fileList)))
-        return [IMG_WEB_DIR + i+"..screen.png" for i in fileList]
+        return [IMG_DIR + i+"..screen.png" for i in fileList]
 
     def read_labeled_brand(filename='LABEL.label'):
         brands = set()
@@ -95,73 +97,16 @@ def label_from_prediction(brand_idx):
         return
 
     d_map = map_domain_to_id.domain_id_map
-    print ("\n\n\nread {} for domain: {}".format(brand_idx, d_map[int(brand_idx)]))
+    print ("read {} for domain: {}".format(brand_idx, d_map[int(brand_idx)]))
 
     for img_path in read_ares:
         label_image(img_path, brand_idx)
 
-
-def label_for_prediction_mobile(brand):
-    path = "/home/ketian/Desktop/phishingdetect/measurement/snap1_mb.txt"
-    web_path = "/home/ketian/Desktop/phishingdetect/measurement/snap1.txt"
-
-    DIR = "/home/ketian/tmp/SNAP1_MB/"
-
-    def read_label_from_web(f="/home/ketian/Desktop/phishingdetect/label_tool/SNAP1.WEB.label"):
-        label_map = dict()
-        ff = open(f,"r")
-        for line in ff.readlines():
-            line = line.strip()
-            if len(line) == 0 or line.startswith('#'):
-                continue
-            domain = line.split(',')[0]
-            l = line.split(',')[-1]
-            label_map[domain] = l
-        return label_map
-
-    def read_brand_predicts_mb(brand, path):
-        fileList = set()
-        f = open(path, "r")
-        for line in f.readlines():
-            line = line.strip()
-            _brand = line.split("/")[-2][:-7]
-            #print (_brand)
-            domain_name = line.split("/")[-1].split("..")[0]
-            if _brand == brand:
-                #print (brand, domain_name)
-                fileList.add(domain_name)
-        return [DIR + i+"..screen.png" for i in fileList]
-
-    def read_brand_predicts(brand,path):
-        fileList = set()
-        f = open(path, "r")
-        for line in f.readlines():
-            line = line.strip()
-            _brand = line.split("/")[-2]
-            domain_name = line.split("/")[-1].split("..")[0]
-            if _brand == brand:
-                #print (brand, domain_name)
-                fileList.add(domain_name)
-        return [DIR + i+ "..screen.png" for i in fileList]
-
-    print ("\n\n\n {}".format(brand))
-
-    read_ares = read_brand_predicts_mb(brand,path)
-    read_web = read_brand_predicts(brand, web_path)
-    label_map = read_label_from_web()
-    c = 0
-    for img_path in read_ares:
-        if img_path in read_web:
-            idx = img_path.split('/')[-1].split('..')[0]
-            print ("alreay labeled", img_path, label_map[idx] )
-            write_label_into_file(idx,label_map[idx],brand)
-        else:
-            print ("NOT", img_path)
-            label_image(img_path, brand)
+    print ("DONE\n\n")
 
 
-IMG_WEB_DIR = "/Users/stevejan/Desktop/SNAP1/"
-LABEL_FILE = "MAY14.SNAP1.WEB.label"
+IMG_DIR = "/home/ketian/tmp/SNAP1_MB/"
+LABEL_FILE = "MAY14.SNAP1.MOBILE.label"
 
 
 if __name__ == "__main__":
@@ -182,6 +127,6 @@ if __name__ == "__main__":
 
     banks = map_domain_to_id.banks_brand
     
-    for i in banks :
+    for i in pop_brand:
         label_from_prediction(i)
 
