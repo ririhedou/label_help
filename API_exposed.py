@@ -140,7 +140,7 @@ def mobile_phishing_via_padding(domain, original_domain):
 
 
 ########################MAIN API ##################
-def API_get_squatting_for_a_domain_with_tld(domain_tld):
+def API_get_squatting_for_a_domain_with_tld(domain_tld, brand):
     """
     example: facebook.com
     """
@@ -154,19 +154,39 @@ def API_get_squatting_for_a_domain_with_tld(domain_tld):
         qname = decode_punycode(qname)
 
     match = 0
-    for brand in SQUT_DIC.SQUAT_D:
-        squat_dict = SQUT_DIC.SQUAT_D[brand]
-        original_domain, original_tld = _domain_tld_with_tldextract(brand)
-        t = labeling_candidiates(qname, squat_dict, original_domain, original_tld)
-        if t:
-            print ("[Detection] [{}] -> [{}] -> [{}]".format(domain_tld, brand, t))
-            match = 1
 
+    squat_dict = SQUT_DIC.SQUAT_D[brand]
+    original_domain, original_tld = _domain_tld_with_tldextract(brand)
+    t = labeling_candidiates(qname, squat_dict, original_domain, original_tld)
+    if t:
+        print ("[Detection] [{}] -> [{}] -> [{}]".format(domain_tld, brand, t))
+        match = 1
     if match == 0:
         print ("[NOMatch] {}".format(domain_tld))
-    return
+    return t
 
 
 if __name__ == "__main__":
-    input = sys.argv[1]
-    API_get_squatting_for_a_domain_with_tld(input)
+    #input = sys.argv[1]
+    #API_get_squatting_for_a_domain_with_tld(input)
+
+    f_web = "MAY14.SNAP1.WEB.label"
+    #f_web =  "MAY14.SNAP1.MOBILE.label"
+    import label_analysis
+    import map_domain_to_id
+    import collections
+
+    #_, mb_brand = read_label_from(f_mb)
+    web_label, web_brand_map = label_analysis.read_label_from(f_web)
+    t = 0
+    types = list()
+    for i in web_label:
+        if web_label[i] != '1':
+            continue
+        t += 1
+        brand = map_domain_to_id.domain_id_map[int(i.split(' ')[-1])][:-4]
+        tmp =  API_get_squatting_for_a_domain_with_tld(i.split(' ')[0], brand)
+        types.append(tmp)
+
+    print (t)
+    print (collections.Counter(types))

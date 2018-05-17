@@ -3,7 +3,8 @@
 
 import collections
 from map_domain_to_id import domain_id_map
-
+import map_domain_to_id
+import sys
 
 def read_label_from(f):
     label_map = dict()
@@ -31,7 +32,7 @@ def read_label_from(f):
 
         l = line.split(',')[-1]
         l = label_split(l,domain)
-        label_map[domain+ ' '+brand] = l
+        label_map[domain+ ' ' +brand] = l
         brand_map[brand].append(domain)
 
     print ("TOTAL", sum(len(brand_map[i]) for i in brand_map))
@@ -39,6 +40,7 @@ def read_label_from(f):
 
 
 def get_false_positive_by_brand(d):
+
     print (len(d))
     t1 = sum(1 for j in d if d[j] == '1')
     print ("1", t1)
@@ -100,13 +102,29 @@ def statistcs_on_classification_predictions(prediction_f, web=True):
     return brand_map
 
 
-if __name__ == "__main__":
+def web_stat():
 
     #f_mb = "MAY14.SNAP1.MB.label"
     f_web = "MAY14.SNAP1.WEB.label"
     #_, mb_brand = read_label_from(f_mb)
     web_label, web_brand_map = read_label_from(f_web)
-    #get_false_positive_by_brand(web_label)
+    get_false_positive_by_brand(web_label)
+
+    #for i in web_brand_map:
+    #    print (i, len(web_brand_map[i]))
+
+    pop_dict = dict()
+    non_pop_dict = dict()
+    popular_brands = map_domain_to_id.pop_brand
+    for i in web_label:
+        if i.split(' ')[-1] in popular_brands:
+            pop_dict[i] = web_label[i]
+        else:
+            non_pop_dict[i] = web_label[i]
+
+    get_false_positive_by_brand(pop_dict)
+    get_false_positive_by_brand(non_pop_dict)
+
 
     web_brand_snap1_map = statistcs_on_classification_predictions("data_need_label/snap1_retrain.txt")
     mb_brand_snap1_map = statistcs_on_classification_predictions("data_need_label/snap1_mb_retrain.txt", web=False)
@@ -119,10 +137,12 @@ if __name__ == "__main__":
         overlapping += len(set(mb_domains).intersection(set(web_domains)))
 
     print (overlapping)
-
-    """
     for i in web_brand_snap1_map:
         if len(web_brand_snap1_map[i]) != len(web_brand_map[i]):
             print (i, len(web_brand_snap1_map[i]))
-    """
 
+
+#WEB
+#web_stat()
+##2331
+#Counter({'combo': 1737, 'typo': 296, 'bits': 116, 'wrongTLD': 99, 'homo': 83})
