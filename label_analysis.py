@@ -6,6 +6,20 @@ from map_domain_to_id import domain_id_map
 import map_domain_to_id
 import sys
 
+
+
+def get_verfied_percent(f):
+    label_map, brand_map =read_label_from(f)
+    brand_positive = collections.defaultdict(int)
+    for i in label_map:
+        b = i.split(' ')[-1]
+        if label_map[i] == '1':
+            brand_positive[b] += 1
+
+    for i in brand_positive:
+        print (i, domain_id_map[int(i)], brand_positive[i])
+
+
 def read_label_from(f):
     label_map = dict()
     brand_map = collections.defaultdict(list)
@@ -33,9 +47,12 @@ def read_label_from(f):
         l = line.split(',')[-1]
         l = label_split(l,domain)
         label_map[domain+ ' ' +brand] = l
+        #if l == '1':
         brand_map[brand].append(domain)
 
-    print ("TOTAL", sum(len(brand_map[i]) for i in brand_map))
+    #for i in brand_map:
+    #    print (domain_id_map[int(i)],i, len(brand_map[i]))
+    print ("TOTAL POSITIVE", sum(len(brand_map[i]) for i in brand_map))
     return label_map, brand_map
 
 
@@ -102,11 +119,11 @@ def statistcs_on_classification_predictions(prediction_f, web=True):
     return brand_map
 
 
-def web_stat():
+def label_stat():
 
-    #f_mb = "MAY14.SNAP1.MB.label"
+    f_mb = "MAY14.SNAP1.MOBILE.label"
     f_web = "MAY14.SNAP1.WEB.label"
-    #_, mb_brand = read_label_from(f_mb)
+    mb_label, mb_brand_map = read_label_from(f_mb)
     web_label, web_brand_map = read_label_from(f_web)
     get_false_positive_by_brand(web_label)
 
@@ -116,11 +133,12 @@ def web_stat():
     pop_dict = dict()
     non_pop_dict = dict()
     popular_brands = map_domain_to_id.pop_brand
-    for i in web_label:
+
+    for i in mb_label:
         if i.split(' ')[-1] in popular_brands:
-            pop_dict[i] = web_label[i]
+            pop_dict[i] = mb_label[i]
         else:
-            non_pop_dict[i] = web_label[i]
+            non_pop_dict[i] = mb_label[i]
 
     get_false_positive_by_brand(pop_dict)
     get_false_positive_by_brand(non_pop_dict)
@@ -137,12 +155,49 @@ def web_stat():
         overlapping += len(set(mb_domains).intersection(set(web_domains)))
 
     print (overlapping)
-    for i in web_brand_snap1_map:
-        if len(web_brand_snap1_map[i]) != len(web_brand_map[i]):
-            print (i, len(web_brand_snap1_map[i]))
+    for i in mb_brand_snap1_map:
+        if len(mb_brand_snap1_map[i]) != len(mb_brand_map[i]):
+            print ("FUCK", i, len(web_brand_snap1_map[i]))
+
+
+def compare_web_mobile():
+    f_mb = "MAY14.SNAP1.MOBILE.label"
+    f_web = "MAY14.SNAP1.WEB.label"
+    mb_label_, mb_brand = read_label_from(f_mb)
+    web_label, web_brand = read_label_from(f_web)
+
+    brands = map_domain_to_id.pop_brand
+    for i in brands:
+        web_mal = web_brand[i]
+        mobile_mal = mb_brand[i]
+        intersection = set(web_mal).intersection(set(mobile_mal))
+        print ("Intersection", len(intersection))
+
+        c = 0
+        for i in mobile_mal:
+            if i not in web_mal:
+                c += 1
+                print ("only in mobile", i)
+
+        print ("only in mobile total", c)
+
+        c = 0
+        for i in web_mal:
+            if i not in mobile_mal:
+                c += 1
+                print ("only in web", i)
+        print ("only in web total", c)
+
+        for i in mobile_mal:
+            if i in web_mal:
+                print ("both", i)
 
 
 #WEB
 #web_stat()
 ##2331
 #Counter({'combo': 1737, 'typo': 296, 'bits': 116, 'wrongTLD': 99, 'homo': 83})
+#read_label_from("MAY14.SNAP1.WEB.label")
+#get_verfied_percent("MAY14.SNAP1.MOBILE.label")
+#compare_web_mobile()
+label_stat()

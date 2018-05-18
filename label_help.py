@@ -126,6 +126,6 @@ if __name__ == "__main__":
 
     banks = map_domain_to_id.banks_brand
     
-    for i in pop_brand:
-        label_from_prediction(i)
+    for i in range(767):
+        label_from_prediction(str(i))
 
