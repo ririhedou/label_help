@@ -23,6 +23,7 @@ def get_verfied_percent(f):
 def read_label_from(f):
     label_map = dict()
     brand_map = collections.defaultdict(list)
+    brand_map_true_lable = collections.defaultdict(list)
     ff = open(f,"r")
 
     def label_split(l,domain):
@@ -47,11 +48,12 @@ def read_label_from(f):
         l = line.split(',')[-1]
         l = label_split(l,domain)
         label_map[domain+ ' ' +brand] = l
-        #if l == '1':
+        if l == '1':
+            brand_map_true_lable[brand].append(domain)
         brand_map[brand].append(domain)
 
-    #for i in brand_map:
-    #    print (domain_id_map[int(i)],i, len(brand_map[i]))
+    for i in brand_map:
+        print (domain_id_map[int(i)],i,len(brand_map[i]),"True label", len(brand_map_true_lable[i]))
     print ("TOTAL POSITIVE", sum(len(brand_map[i]) for i in brand_map))
     return label_map, brand_map
 
@@ -198,6 +200,8 @@ def compare_web_mobile():
 ##2331
 #Counter({'combo': 1737, 'typo': 296, 'bits': 116, 'wrongTLD': 99, 'homo': 83})
 #read_label_from("MAY14.SNAP1.WEB.label")
+read_label_from("MAY14.SNAP1.MOBILE.label")
+
 #get_verfied_percent("MAY14.SNAP1.MOBILE.label")
 #compare_web_mobile()
-label_stat()
+#label_stat()
