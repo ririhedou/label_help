@@ -171,7 +171,7 @@ if __name__ == "__main__":
     #API_get_squatting_for_a_domain_with_tld(input)
 
     f_web = "MAY14.SNAP1.WEB.label"
-    #f_web =  "MAY14.SNAP1.MOBILE.label"
+    f_web =  "MAY14.SNAP1.MOBILE.label"
     import label_analysis
     import map_domain_to_id
     import collections
@@ -185,7 +185,7 @@ if __name__ == "__main__":
             continue
         t += 1
         brand = map_domain_to_id.domain_id_map[int(i.split(' ')[-1])][:-4]
-        tmp =  API_get_squatting_for_a_domain_with_tld(i.split(' ')[0], brand)
+        tmp = API_get_squatting_for_a_domain_with_tld(i.split(' ')[0], brand)
         types.append(tmp)
 
     print (t)

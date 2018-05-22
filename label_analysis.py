@@ -7,7 +7,6 @@ import map_domain_to_id
 import sys
 
 
-
 def get_verfied_percent(f):
     label_map, brand_map =read_label_from(f)
     brand_positive = collections.defaultdict(int)
@@ -100,7 +99,8 @@ def statistcs_on_classification_predictions(prediction_f, web=True):
     for i in range(766):
         if not str(i) in keys:
             #print (i,  domain_id_map[i], 0)
-            predictions.append([domain_id_map[i], 0])
+            #predictions.append([domain_id_map[i], 0])
+            pass
         else:
             #print (i, domain_id_map[i], len(brand_map[str(i)]))
             predictions.append([domain_id_map[i], len(brand_map[str(i)])])
@@ -109,8 +109,11 @@ def statistcs_on_classification_predictions(prediction_f, web=True):
     total = sum(i[1] for i in predictions)
 
     zero = 0
-    #for i in predictions[:10]:
-        #print (i[0], i[1], float(i[1])/total)
+    cum = 0
+    for i,c in enumerate(predictions):
+        cum += float(c[1]) / total
+        print ("{} {} {}".format(c[0], i, cum))
+
         #if i[1] == 0:
         #print (i[0])
         #zero += 1
@@ -195,13 +198,22 @@ def compare_web_mobile():
                 print ("both", i)
 
 
+
+
+# Counter({'combo': 1737, 'typo': 296, 'bits': 116, 'wrongTLD': 99, 'homo': 83})
 #WEB
 #web_stat()
 ##2331
-#Counter({'combo': 1737, 'typo': 296, 'bits': 116, 'wrongTLD': 99, 'homo': 83})
+
+#Counter({u'combo': 1970, u'typo': 369, u'bits': 116, u'wrongTLD': 105, u'homo': 87})
+#2647
+
+
 #read_label_from("MAY14.SNAP1.WEB.label")
-read_label_from("MAY14.SNAP1.MOBILE.label")
+#read_label_from("MAY14.SNAP1.MOBILE.label")
 
 #get_verfied_percent("MAY14.SNAP1.MOBILE.label")
 #compare_web_mobile()
 #label_stat()
+#statistcs_on_classification_predictions("data_need_label/snap1_retrain.txt")
+statistcs_on_classification_predictions("data_need_label/snap1_mb_retrain.txt", web=False)
