@@ -54,7 +54,7 @@ def read_label_from(f):
     for i in brand_map:
         print (domain_id_map[int(i)],i,len(brand_map[i]),"True label", len(brand_map_true_lable[i]))
     print ("TOTAL POSITIVE", sum(len(brand_map[i]) for i in brand_map))
-    return label_map, brand_map
+    return label_map, brand_map, brand_map_true_lable
 
 
 def get_false_positive_by_brand(d):
@@ -128,8 +128,8 @@ def label_stat():
 
     f_mb = "MAY14.SNAP1.MOBILE.label"
     f_web = "MAY14.SNAP1.WEB.label"
-    mb_label, mb_brand_map = read_label_from(f_mb)
-    web_label, web_brand_map = read_label_from(f_web)
+    mb_label, mb_brand_map, _ = read_label_from(f_mb)
+    web_label, web_brand_map, _ = read_label_from(f_web)
     get_false_positive_by_brand(web_label)
 
     #for i in web_brand_map:
@@ -168,8 +168,8 @@ def label_stat():
 def compare_web_mobile():
     f_mb = "MAY14.SNAP1.MOBILE.label"
     f_web = "MAY14.SNAP1.WEB.label"
-    mb_label_, mb_brand = read_label_from(f_mb)
-    web_label, web_brand = read_label_from(f_web)
+    mb_label_, mb_brand, _ = read_label_from(f_mb)
+    web_label, web_brand, _ = read_label_from(f_web)
 
     brands = map_domain_to_id.pop_brand
     for i in brands:
@@ -209,11 +209,14 @@ def compare_web_mobile():
 #2647
 
 
-#read_label_from("MAY14.SNAP1.WEB.label")
-#read_label_from("MAY14.SNAP1.MOBILE.label")
+label_map, brand_map, brand_map_true_lable = read_label_from("MAY14.SNAP1.WEB.label")
+label_map, brand_map, brand_map_true_lable_mb = read_label_from("MAY14.SNAP1.MOBILE.label")
+
+print ("WEB", brand_map_true_lable)
+print ("MB", brand_map_true_lable_mb)
 
 #get_verfied_percent("MAY14.SNAP1.MOBILE.label")
 #compare_web_mobile()
 #label_stat()
 #statistcs_on_classification_predictions("data_need_label/snap1_retrain.txt")
-statistcs_on_classification_predictions("data_need_label/snap1_mb_retrain.txt", web=False)
+#statistcs_on_classification_predictions("data_need_label/snap1_mb_retrain.txt", web=False)
